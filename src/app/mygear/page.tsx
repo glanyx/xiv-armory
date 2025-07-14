@@ -1,20 +1,16 @@
 'use client'
 
-import { Select, SelectedItemProps, SelectItem } from '@heroui/react'
-
-enum ItemRarity {
-  COMMON = 'common',
-  UNCOMMON = 'uncommon',
-  RARE = 'rare',
-  EPIC = 'epic'
-}
-
-interface GearItem {
-  id: number
-  name: string
-  itemLevel: number
-  rarity: ItemRarity
-}
+import Mainhand from '@/assets/xivicons/main_hand.svg'
+import Head from '@/assets/xivicons/helmet.svg'
+import Chest from '@/assets/xivicons/chest.svg'
+import Hands from '@/assets/xivicons/gloves.svg'
+import Legs from '@/assets/xivicons/pants.svg'
+import Feet from '@/assets/xivicons/boots.svg'
+import Ears from '@/assets/xivicons/earring.svg'
+import Neck from '@/assets/xivicons/necklace.svg'
+import Wrist from '@/assets/xivicons/bracelet.svg'
+import Finger from '@/assets/xivicons/ring.svg'
+import GearSelector, { ItemRarity, GearItem } from "@/components/gearselector";
 
 const exampleItems: Array<GearItem> = [
   { id: 1, name: 'Broadblade', itemLevel: 10, rarity: ItemRarity.COMMON },
@@ -23,46 +19,65 @@ const exampleItems: Array<GearItem> = [
   { id: 4, name: 'Blazefire Saber', itemLevel: 760, rarity: ItemRarity.EPIC },
 ]
 
-const getRarityColor = (rarity?: ItemRarity) => {
-  switch (rarity) {
-    case ItemRarity.UNCOMMON:
-      return 'text-green-600'
-    case ItemRarity.RARE:
-      return 'text-blue-600'
-    case ItemRarity.EPIC:
-      return 'text-purple-600'
-    default:
-      return 'text-white'
-  }
-}
-
 export default function MyGear() {
   return (
-    <>
-      <Select
-        className='max-w-xs'
-        label='Select'
+    <div className="w-1/2 grid grid-flow-col grid-rows-6 justify-items-center gap-4">
+      <GearSelector
+        name='Main Hand'
+        icon={<Mainhand />}
         items={exampleItems}
-        renderValue={(items) => {
-          return items.map(item => (
-            <div key={item.key} className="flex items-center gap-2">
-              <div className={`flex items-center justify-between`}>
-                <span>{item.data?.name}</span>
-                <span>{item.data?.itemLevel}</span>
-              </div>
-            </div>
-          ))
-        }}
-      >
-        {(item) => (
-          <SelectItem key={item.id} textValue={item.name}>
-            <div className={`flex items-center justify-between ${getRarityColor(item.rarity)}`}>
-              <span>{item.name}</span>
-              <span>{item.itemLevel}</span>
-            </div>
-          </SelectItem>
-        )}
-      </Select>
-    </>
+      />
+      <GearSelector
+        name='Head'
+        icon={<Head />}
+        items={exampleItems}
+      />
+      <GearSelector
+        name='Chest'
+        icon={<Chest />}
+        items={exampleItems}
+      />
+      <GearSelector
+        name='Hands'
+        icon={<Hands />}
+        items={exampleItems}
+      />
+      <GearSelector
+        name='Legs'
+        icon={<Legs />}
+        items={exampleItems}
+      />
+      <GearSelector
+        name='Feet'
+        icon={<Feet />}
+        items={exampleItems}
+      />
+      <div></div>
+      <GearSelector
+        name='Ears'
+        icon={<Ears />}
+        items={exampleItems}
+      />
+      <GearSelector
+        name='Neck'
+        icon={<Neck />}
+        items={exampleItems}
+      />
+      <GearSelector
+        name='Wrist'
+        icon={<Wrist />}
+        items={exampleItems}
+      />
+      <GearSelector
+        name='Ring 1'
+        icon={<Finger />}
+        items={exampleItems}
+      />
+      <GearSelector
+        name='Ring 2'
+        icon={<Finger />}
+        items={exampleItems}
+      />
+    </div>
   );
 }
