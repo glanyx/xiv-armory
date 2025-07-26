@@ -1,6 +1,6 @@
 'use client'
 
-import { IItem, ItemStats } from './gearselector'
+import { IItem } from '@/types/gear'
 
 export type MainstatOptions = 'str' | 'dex' | 'int' | 'mnd'
 export type SubstatOptions = 'crt' | 'dh' | 'det' | 'sps' | 'sks' | 'tnc' | 'pie'
