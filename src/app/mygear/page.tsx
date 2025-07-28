@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { GearElementArgs, EquipmentFormValues, Stats } from '@/types/gear'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { GearElementArgs, EquipmentFormValues, Stats, translateSubstat } from '@/types/gear'
 
 import Mainhand from '@/assets/xivicons/main_hand.svg'
 import Head from '@/assets/xivicons/helmet.svg'
@@ -30,32 +30,42 @@ const slots: Array<GearElementArgs> = [
   { label: 'Ring 2', slot: 'finger', name: 'finger2', icon: <Finger /> },
 ]
 
-
-
 export default function MyGear() {
 
-  const { control, subscribe } = useForm<EquipmentFormValues>()
-  const [stats, setStats] = useState<Stats>({ crit: 0, dh: 0, det: 0, sks: 0 })
+  const { control, subscribe, handleSubmit } = useForm<EquipmentFormValues>()
+  const [stats, setStats] = useState<Stats>({ crt: 0, dh: 0, det: 0, sks: 0, sps: 0, tnc: 0, pie: 0 })
   
   useEffect(() => {
     return subscribe({
       formState: { values: true },
       callback: ({ values }) => {
         const stats = Object.keys(values).reduce((acc, cur) => {
-          acc.crit += values[(cur as keyof EquipmentFormValues)]?.attr['Critical Hit'] || 0
-          acc.dh += values[(cur as keyof EquipmentFormValues)]?.attr['Direct Hit Rate'] || 0
-          acc.det += values[(cur as keyof EquipmentFormValues)]?.attr['Determination'] || 0
-          acc.sks += values[(cur as keyof EquipmentFormValues)]?.attr['Skill Speed'] || 0
+          if (!values[(cur as keyof EquipmentFormValues)]) return acc
+          const { attr, attr_max } = values[(cur as keyof EquipmentFormValues)].item
+          const cap = Math.max(attr['Critical Hit'] || 0, attr_max['Critical Hit'] || 0)
+          const itemStats = { crt: 0, dh: 0, det: 0, sks: 0, sps: 0, tnc: 0, pie: 0 }
+          Object.keys(translateSubstat).forEach(substat => itemStats[substat as keyof Stats] += attr[translateSubstat[substat as keyof Stats]] || 0)
+          values[(cur as keyof EquipmentFormValues)]?.materia.forEach(materia => {
+            if (!materia) return
+            const key = Object.keys(materia)[0]
+            itemStats[key as keyof Stats] += materia[key as keyof Stats]
+          })
+          console.log(values)
+          Object.keys(translateSubstat).forEach(substat => acc[substat as keyof Stats] += itemStats[substat as keyof Stats] > cap ? cap : itemStats[substat as keyof Stats])
           return acc
-        }, { crit: 0, dh: 0, det: 0, sks: 0 })
+        }, { crt: 0, dh: 0, det: 0, sks: 0, sps: 0, tnc: 0, pie: 0 })
         setStats(stats)
       }
     })
   }, [subscribe])
 
+  const onSubmit: SubmitHandler<EquipmentFormValues> = (data) => {
+    console.log(data)
+  }
+
   return (
     <>
-      <form>
+      <form onSubmit={(handleSubmit(onSubmit))}>
         <div className="w-full grid xl:grid-flow-col xs:grid-col xl:grid-rows-6 justify-center gap-4">
           {slots.map(itemSlot => (
             <GearSelector
@@ -71,7 +81,8 @@ export default function MyGear() {
           ))}
         </div>
       </form>
-      <span>{`Crit: ${stats.crit} | DH: ${stats.dh} | Det: ${stats.det} | SkS: ${stats.sks}`}</span>
+      <span>{`Crit: ${stats.crt} | DH: ${stats.dh} | Det: ${stats.det} | SkS: ${stats.sks}`}</span>
+      <button type='submit'>Submit</button>
     </>
   );
 }

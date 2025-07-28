@@ -55,7 +55,7 @@ const GearSelector = (props: GearSelectorProps & UseControllerProps<EquipmentFor
     fetch(`${GARLAND_DB_URL}/doc/item/en/3/${selectedItemId}.json`)
       .then((res) => res.json())
       .then((data: ItemResponse) => {
-        field.onChange(data.item)
+        field.onChange({ item: data.item, materia: Array.from({ length: data.item.advancedMeldingForbidden ? data.item.sockets : 5 }) })
       })
   }
 
@@ -100,12 +100,12 @@ const GearSelector = (props: GearSelectorProps & UseControllerProps<EquipmentFor
             </Select>
           </div>
           <StatBlock
-            item={field.value}
+            equipment={field.value}
             displaySubstats={['crt', 'det', 'dh', 'sks']}
           />
         </div>
         <div className='flex flex-row gap-2 h-10'>
-          {field.value && Array.from(Array(field.value.advancedMeldingForbidden ? field.value.sockets : 5)).map((_, index) => <MateriaSelector key={`${field.value?.name}-materia${index}`} />)}
+          {field.value && Array.from(Array(field.value.item.advancedMeldingForbidden ? field.value.item.sockets : 5)).map((_, index) => <MateriaSelector key={`${field.value?.item.name}-materia${index + 1}`} name={`${slot as keyof EquipmentFormValues}.materia.${index}`} control={props.control} />)}
         </div>
       </div>
     </div>

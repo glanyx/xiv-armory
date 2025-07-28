@@ -1,37 +1,27 @@
 'use client'
 
-import { IItem } from '@/types/gear'
+import { ItemWithMateria, translateSubstat } from '@/types/gear'
 
 export type MainstatOptions = 'str' | 'dex' | 'int' | 'mnd'
 export type SubstatOptions = 'crt' | 'dh' | 'det' | 'sps' | 'sks' | 'tnc' | 'pie'
 export type StatOptions = MainstatOptions & SubstatOptions
 
 interface StatBlockProps {
-  item?: IItem
+  equipment?: ItemWithMateria
   displaySubstats?: Array<SubstatOptions>
 }
 
-const translateSubstat = {
-  crt: 'Critical Hit',
-  dh: 'Direct Hit Rate',
-  det: 'Determination',
-  sks: 'Skill Speed',
-  sps: 'Spell Speed',
-  tnc: 'Tenacity',
-  pie: 'Piety',
-}
-
 const StatBlock = ({
-  item,
+  equipment,
   displaySubstats = [],
 }: StatBlockProps) => {
 
   return (
     <div className='flex flex-row gap-3 items-center text-center'>
       {displaySubstats.map(stat => (
-        <div key={`${item ? item.name : 'item'}-${stat}`} className='flex flex-col'>
+        <div key={`${equipment ? equipment.item.name : 'item'}-${stat}`} className='flex flex-col'>
           <span>{stat.toUpperCase()}</span>
-          <span>{item && item.attr[translateSubstat[stat]] && item.attr[translateSubstat[stat]] || 0}</span>
+          <span>{equipment && equipment.item.attr[translateSubstat[stat]] && equipment.item.attr[translateSubstat[stat]] || 0}</span>
         </div>
       ))}
     </div>

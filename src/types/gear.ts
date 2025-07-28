@@ -63,25 +63,49 @@ export interface IItem {
   unlistable: boolean
 }
 
+type MateriaStat = 'crt' | 'dh' | 'det' | 'sps' | 'sks' | 'tnc' | 'pie'
+
+type Materia = {
+  [key in MateriaStat]: number
+}
+
+export interface ItemWithMateria {
+  item: IItem
+  materia: Array<Materia>
+}
+
 export interface Stats {
-  crit: number
+  crt: number
   dh: number
   det: number
   sks: number
+  sps: number
+  tnc: number
+  pie: number
 }
 
 export type ItemType = 'weapon' | 'head' | 'chest' | 'hands' | 'legs' | 'feet' | 'ears' | 'neck' | 'wrist' | 'finger'
 
 export type EquipmentFormValues = {
-  weapon: IItem
-  head: IItem
-  chest: IItem
-  hands: IItem
-  legs: IItem
-  feet: IItem
-  ears: IItem
-  neck: IItem
-  wrist: IItem
-  finger1: IItem
-  finger2: IItem
+  weapon: ItemWithMateria
+  head: ItemWithMateria
+  chest: ItemWithMateria
+  hands: ItemWithMateria
+  legs: ItemWithMateria
+  feet: ItemWithMateria
+  ears: ItemWithMateria
+  neck: ItemWithMateria
+  wrist: ItemWithMateria
+  finger1: ItemWithMateria
+  finger2: ItemWithMateria
+}
+
+export const translateSubstat = {
+  crt: 'Critical Hit',
+  dh: 'Direct Hit Rate',
+  det: 'Determination',
+  sks: 'Skill Speed',
+  sps: 'Spell Speed',
+  tnc: 'Tenacity',
+  pie: 'Piety',
 }

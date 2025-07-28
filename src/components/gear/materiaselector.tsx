@@ -2,6 +2,8 @@
 
 import { Select, SelectItem } from '@heroui/react'
 import { SubstatOptions } from './statblock'
+import { useController, UseControllerProps } from 'react-hook-form'
+import { EquipmentFormValues } from '@/types/gear'
 
 enum MateriaGrade {
   I = 1,
@@ -36,11 +38,18 @@ const materiaItems: Array<MateriaProps> = [
   { id: 5, grade: MateriaGrade.XII, stat: 'sps', value: 54 },
 ]
 
-const MateriaSelector = ({
-}: MateriaSelectorProps) => {
+const MateriaSelector = (props: MateriaSelectorProps & UseControllerProps<EquipmentFormValues>) => {
+
+  const { field } = useController(props)
+
+  const setMateria = (selection: number) => {
+    const stat = materiaItems.find(item => item.id === selection)
+    if (!stat) return
+    field.onChange({ [stat.stat]: stat.value })
+  }
 
   return (
-    <Select aria-label={`materia-dropdown`} className='w-30'>
+    <Select aria-label={`materia-dropdown`} className='w-30' onSelectionChange={(selection) => selection.currentKey && setMateria(parseInt(selection.currentKey))}>
       {materiaItems.map(materia => <SelectItem key={materia.id}>{`+${materia.value} ${materia.stat.toUpperCase()}`}</SelectItem>)}
     </Select>
   )
